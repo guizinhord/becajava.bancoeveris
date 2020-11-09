@@ -7,43 +7,44 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.app.BancoEveris.model.BaseResponse;
 import br.app.BancoEveris.model.Conta;
 import br.app.BancoEveris.repository.ContaRepository;
 import br.app.BancoEveris.repository.OperacaoRepository;
-import br.app.BancoEveris.spec.ContaList;
-import br.app.BancoEveris.spec.ContaSpec;
+import br.app.BancoEveris.request.ContaReq;
+import br.app.BancoEveris.response.BaseRes;
+import br.app.BancoEveris.response.ContaListRes;
 
 @Service
 public class ContaService {
 	@Autowired
 	private ContaRepository repository;
 
-	public BaseResponse inserir(ContaSpec contaSpec) {
+	public BaseRes inserir(ContaReq request) {
 		Conta conta = new Conta();
-		BaseResponse base = new BaseResponse();
+		BaseRes base = new BaseRes();
 		base.StatusCode = 400;
 
-		if (contaSpec.getNome() == "") {
+		if (request.getNome() == "") {
 			base.Message = "O nome do cliente não foi preenchido.";
 			return base;
 		}
 
-		if (contaSpec.getCpf() == "") {
+		if (request.getCpf() == "") {
 			base.Message = "O CPF do cliente não foi preenchido.";
 			return base;
 		}
 
-		if (contaSpec.getHash() == "") {
+		if (request.getHash() == "") {
 			base.Message = "O Hash do cliente não foi preenchido.";
 			return base;
 		}
 		conta.setSaldo(0.0);
 
-		conta.setNome(contaSpec.getNome());
-		conta.setCpf(contaSpec.getCpf());
-		conta.setHash(contaSpec.getHash());
-
+		conta.setNome(request.getNome());
+		conta.setCpf(request.getCpf());
+		conta.setHash(request.getHash());
+		/*RANDOM HASH randomHash == verificar se existe um hash
+		 * if(contaExiste = true)*/
 		repository.save(conta);
 		base.StatusCode = 201;
 		base.Message = "Cliente inserida com sucesso.";
@@ -67,11 +68,11 @@ public class ContaService {
 		return response;
 	}
 
-	public ContaList listar() {
+	public ContaListRes listar() {
 
 		List<Conta> lista = repository.findAll();
 
-		ContaList response = new ContaList();
+		ContaListRes response = new ContaListRes();
 		response.setContas(lista);
 		response.StatusCode = 200;
 		response.Message = "Clientes obtidos com sucesso.";
@@ -79,30 +80,30 @@ public class ContaService {
 		return response;
 	}
 
-	public BaseResponse atualizar(Long id, ContaSpec contaSpec) {
+	public BaseRes atualizar(Long id, ContaReq request) {
 		Conta conta = new Conta();
-		BaseResponse base = new BaseResponse();
+		BaseRes base = new BaseRes();
 		base.StatusCode = 400;
 
-		if (contaSpec.getNome() == "") {
+		if (request.getNome() == "") {
 			base.Message = "O nome do cliente não foi preenchido.";
 			return base;
 		}
 
-		if (contaSpec.getCpf() == "") {
+		if (request.getCpf() == "") {
 			base.Message = "O CPF do cliente não foi preenchido.";
 			return base;
 		}
 
-		if (contaSpec.getHash() == "") {
+		if (request.getHash() == "") {
 			base.Message = "O Hash do cliente não foi preenchido.";
 			return base;
 		}
 
 		conta.setId(id);
-		conta.setNome(contaSpec.getNome());
-		conta.setCpf(contaSpec.getCpf());
-		conta.setHash(contaSpec.getHash());
+		conta.setNome(request.getNome());
+		conta.setCpf(request.getCpf());
+		conta.setHash(request.getHash());
 
 		repository.save(conta);
 		base.StatusCode = 200;
@@ -110,8 +111,8 @@ public class ContaService {
 		return base;
 	}
 
-	public BaseResponse deletar(Long id) {
-		BaseResponse response = new BaseResponse();
+	public BaseRes deletar(Long id) {
+		BaseRes response = new BaseRes();
 
 		if (id == null || id == 0) {
 			response.StatusCode = 400;

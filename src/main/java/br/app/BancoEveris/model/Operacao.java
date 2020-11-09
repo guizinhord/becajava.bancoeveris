@@ -7,8 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import br.app.BancoEveris.response.BaseRes;
+
 @Entity
-public class Operacao extends BaseResponse {
+public class Operacao extends BaseRes {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

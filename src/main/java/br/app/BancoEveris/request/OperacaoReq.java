@@ -1,6 +1,6 @@
-package br.app.BancoEveris.spec;
+package br.app.BancoEveris.request;
 
-public class OperacaoSpec {
+public class OperacaoReq {
 	private double valor;
 	private String tipo;
 

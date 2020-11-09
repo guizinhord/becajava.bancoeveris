@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.app.BancoEveris.model.BaseResponse;
+import br.app.BancoEveris.request.OperacaoReq;
+import br.app.BancoEveris.request.TranferenciaReq;
+import br.app.BancoEveris.response.BaseRes;
 import br.app.BancoEveris.service.OperacaoService;
-import br.app.BancoEveris.spec.OperacaoSpec;
-import br.app.BancoEveris.spec.TranferenciaSpec;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -22,9 +22,9 @@ public class OperacaoController {
 	private OperacaoService service;
 
 	@PostMapping(path = "/depositos")
-	public ResponseEntity depositar(@RequestBody OperacaoSpec operacaoSpec) {
+	public ResponseEntity depositar(@RequestBody OperacaoReq requestConta) {
 		try {
-			BaseResponse response = service.depositar(operacaoSpec);
+			BaseRes response = service.depositar(requestConta);
 			return ResponseEntity.status(response.StatusCode).body(response);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error");
@@ -32,9 +32,9 @@ public class OperacaoController {
 	}
 
 	@PostMapping(path = "/saques")
-	public ResponseEntity sacar(@RequestBody OperacaoSpec operacaoSpec) {
+	public ResponseEntity sacar(@RequestBody OperacaoReq requestConta) {
 		try {
-			BaseResponse response = service.sacar(operacaoSpec);
+			BaseRes response = service.sacar(requestConta);
 			return ResponseEntity.status(response.StatusCode).body(response);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error");
@@ -42,9 +42,9 @@ public class OperacaoController {
 	}
 
 	@PostMapping(path = "/transferencia")
-	public ResponseEntity transferir(@RequestBody TranferenciaSpec operacaoSpec) {
+	public ResponseEntity transferir(@RequestBody TranferenciaReq requestTransferencia) {
 		try {
-			BaseResponse response = service.transferir(operacaoSpec);
+			BaseRes response = service.transferir(requestTransferencia);
 			return ResponseEntity.status(response.StatusCode).body(response);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error");

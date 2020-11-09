@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.app.BancoEveris.model.BaseResponse;
 import br.app.BancoEveris.model.Conta;
+import br.app.BancoEveris.request.ContaReq;
+import br.app.BancoEveris.response.BaseRes;
+import br.app.BancoEveris.response.ContaListRes;
 import br.app.BancoEveris.service.ContaService;
-import br.app.BancoEveris.spec.ContaList;
-import br.app.BancoEveris.spec.ContaSpec;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -27,12 +27,12 @@ public class ContaController extends BaseController {
 	private ContaService service;
 
 	@PostMapping
-	public ResponseEntity inserir(@RequestBody ContaSpec contaSpec) {
+	public ResponseEntity inserir(@RequestBody ContaReq requestConta) {
 		try {
-			BaseResponse response = service.inserir(contaSpec);
+			BaseRes response = service.inserir(requestConta);
 			return ResponseEntity.status(response.StatusCode).body(response);
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: HASH não está disponível! ");
+			return ResponseEntity.status(errorBase.StatusCode).body(errorBase);
 		}
 	}
 
@@ -50,7 +50,7 @@ public class ContaController extends BaseController {
 	@GetMapping
 	public ResponseEntity listar() {
 		try {
-			ContaList contas = service.listar();
+			ContaListRes contas = service.listar();
 			return ResponseEntity.status(HttpStatus.OK).body(contas);
 		} catch (Exception e) {
 			return ResponseEntity.status(errorBase.StatusCode).body(errorBase);
@@ -58,9 +58,9 @@ public class ContaController extends BaseController {
 	}
 
 	@PutMapping(path = "/{id}")
-	public ResponseEntity atualizar(@RequestBody ContaSpec contaSpec, @PathVariable Long id) {
+	public ResponseEntity atualizar(@RequestBody ContaReq requestConta, @PathVariable Long id) {
 		try {
-			BaseResponse response = service.atualizar(id, contaSpec);
+			BaseRes response = service.atualizar(id, requestConta);
 			return ResponseEntity.status(response.StatusCode).body(response);
 		} catch (Exception e) {
 			return ResponseEntity.status(errorBase.StatusCode).body(errorBase);
@@ -70,7 +70,7 @@ public class ContaController extends BaseController {
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity deletar(@PathVariable Long id) {
 		try {
-			BaseResponse response = service.deletar(id);
+			BaseRes response = service.deletar(id);
 			return ResponseEntity.status(response.StatusCode).build();
 		} catch (Exception e) {
 			return ResponseEntity.status(errorBase.StatusCode).body(errorBase);

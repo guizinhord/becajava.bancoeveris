@@ -1,6 +1,6 @@
-package br.app.BancoEveris.spec;
+package br.app.BancoEveris.request;
 
-public class TranferenciaSpec {
+public class TranferenciaReq {
 	private String hashOrigem;
 	private String hashDestino;
 	private Double valor;

@@ -1,8 +1,8 @@
-package br.app.BancoEveris.model;
+package br.app.BancoEveris.response;
 
 import javax.persistence.Transient;
 
-public class BaseResponse {
+public class BaseRes {
 	@Transient
 	public int StatusCode;
 	@Transient

@@ -6,8 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import br.app.BancoEveris.response.BaseRes;
+
 @Entity
-public class Conta extends BaseResponse {
+public class Conta extends BaseRes {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
