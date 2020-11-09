@@ -67,6 +67,11 @@ public class OperacaoService {
 			return base;
 		}
 
+		if (operacaoSpecSacar.getValor() > conta.get().getSaldo()) {
+			base.Message = "Saque nao pode ser efetuado  valor do saldo menor ";
+			return base;
+		}
+
 		op.setValor(operacaoSpecSacar.getValor());
 		op.setTipo(operacaoSpecSacar.getTipo());
 		op.setContaOrigem(conta.get());
@@ -98,18 +103,28 @@ public class OperacaoService {
 			return base;
 		}
 
+		if (operacaoSpec.getValor() == 0) {
+			base.Message = "O valor Esta abaixo do limite Tente novamente ";
+			return base;
+		}
+
+		if (operacaoSpec.getValor() > conta1.get().getSaldo()) {
+			base.Message = "O valor Inserido esta Abaixo do seu Saldo Tente Novamente";
+			return base;
+		}
+
 		conta1.get().setSaldo(conta1.get().getSaldo() - operacaoSpec.getValor());
 		conta2.get().setSaldo(conta2.get().getSaldo() + operacaoSpec.getValor());
 
 		operacao.setContaOrigem(conta1.get());
 		operacao.setContaDestino(conta2.get());
 		operacao.setValor(operacaoSpec.getValor());
-		
+
 		repositoryConta.save(conta1.get());
 		repositoryConta.save(conta2.get());
-		
+
 		repository.save(operacao);
-		
+
 		base.StatusCode = 200;
 		base.Message = "Transferencia realizada com sucesso.";
 		return base;
