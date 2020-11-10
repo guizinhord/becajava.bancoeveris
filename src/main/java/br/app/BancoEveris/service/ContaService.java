@@ -3,11 +3,13 @@ package br.app.BancoEveris.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.app.BancoEveris.model.Conta;
+import br.app.BancoEveris.model.Operacao;
 import br.app.BancoEveris.repository.ContaRepository;
 import br.app.BancoEveris.repository.OperacaoRepository;
 import br.app.BancoEveris.request.ContaReq;
@@ -18,6 +20,9 @@ import br.app.BancoEveris.response.ContaListRes;
 public class ContaService {
 	@Autowired
 	private ContaRepository repository;
+	
+	@Autowired
+	private OperacaoRepository repoOperacao;
 
 	public BaseRes inserir(ContaReq request) {
 		Conta conta = new Conta();
@@ -33,18 +38,14 @@ public class ContaService {
 			base.Message = "O CPF do cliente não foi preenchido.";
 			return base;
 		}
+		UUID uuid = UUID.randomUUID();
+		conta.setHash(uuid.toString());
 
-		if (request.getHash() == "") {
-			base.Message = "O Hash do cliente não foi preenchido.";
-			return base;
-		}
 		conta.setSaldo(0.0);
-
+		
 		conta.setNome(request.getNome());
 		conta.setCpf(request.getCpf());
-		conta.setHash(request.getHash());
-		/*RANDOM HASH randomHash == verificar se existe um hash
-		 * if(contaExiste = true)*/
+		
 		repository.save(conta);
 		base.StatusCode = 201;
 		base.Message = "Cliente inserida com sucesso.";
@@ -55,12 +56,13 @@ public class ContaService {
 		Optional<Conta> cliente = repository.findById(id);
 
 		Conta response = new Conta();
-
+		
 		if (cliente.isEmpty()) {
 			response.Message = "Cliente não encontrado";
 			response.StatusCode = 404;
 			return response;
 		}
+		
 		response.setHash(cliente.get().getHash());
 		response.setSaldo(cliente.get().getSaldo());
 		response.Message = "Cliente obtido com sucesso";
