@@ -15,6 +15,7 @@ import br.app.BancoEveris.repository.OperacaoRepository;
 import br.app.BancoEveris.request.ContaReq;
 import br.app.BancoEveris.response.BaseRes;
 import br.app.BancoEveris.response.ContaListRes;
+import br.app.BancoEveris.response.ContaRes;
 
 @Service
 public class ContaService {
@@ -22,8 +23,8 @@ public class ContaService {
 	private ContaRepository repository;
 	
 	@Autowired
-	private OperacaoRepository repoOperacao;
-
+	private OperacaoService operacaoService;
+	
 	public BaseRes inserir(ContaReq request) {
 		Conta conta = new Conta();
 		BaseRes base = new BaseRes();
@@ -122,6 +123,28 @@ public class ContaService {
 		}
 
 		repository.deleteById(id);
+		response.StatusCode = 200;
+		return response;
+	}
+	
+	public ContaRes Saldo(String hash) {
+
+		ContaRes response = new ContaRes();
+		response.StatusCode = 400;
+
+		Optional<Conta> conta = repository.findByHash(hash);
+
+		if (conta == null) {
+			response.Message = "Conta não encontrada!!";
+			return response;
+		}
+
+		double saldo = operacaoService.Saldo(conta.get().getId());
+
+		response.setSaldo(saldo);
+		response.setNome(conta.get().getNome());
+		
+		response.setHash(conta.get().getHash());
 		response.StatusCode = 200;
 		return response;
 	}

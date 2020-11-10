@@ -1,5 +1,6 @@
 package br.app.BancoEveris.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class OperacaoService {
 			return base;
 		}
 
-		op.setTipo(request.getTipo());
+		op.setTipo("D");
 		op.setValor(request.getValor());
 		op.setContaOrigem(conta.get());
 
@@ -73,7 +74,7 @@ public class OperacaoService {
 		}
 
 		op.setValor(request.getValor());
-		op.setTipo(request.getTipo());
+		op.setTipo("S");
 		op.setContaOrigem(conta.get());
 
 		conta.get().setSaldo(conta.get().getSaldo() - request.getValor());
@@ -90,6 +91,7 @@ public class OperacaoService {
 		Optional<Conta> conta1 = repositoryConta.findByHash(request.getHashOrigem());
 		Optional<Conta> conta2 = repositoryConta.findByHash(request.getHashDestino());
 
+		Operacao op = new Operacao();
 		BaseRes base = new BaseRes();
 		Operacao operacao = new Operacao();
 
@@ -116,6 +118,7 @@ public class OperacaoService {
 		conta1.get().setSaldo(conta1.get().getSaldo() - request.getValor());
 		conta2.get().setSaldo(conta2.get().getSaldo() + request.getValor());
 
+		op.setTipo("T");
 		operacao.setContaOrigem(conta1.get());
 		operacao.setContaDestino(conta2.get());
 		operacao.setValor(request.getValor());
@@ -128,6 +131,44 @@ public class OperacaoService {
 		base.StatusCode = 200;
 		base.Message = "Transferencia realizada com sucesso.";
 		return base;
+	}
+
+	public double Saldo(Long contaId) {
+
+		double saldo = 0;
+
+		Conta contaOrigem = new Conta();
+		contaOrigem.setId(contaId);
+
+		Conta contaDestino = new Conta();
+		contaDestino.setId(contaId);
+
+		List<Operacao> lista = repository.findOperacoesPorConta(contaId);
+
+		for (Operacao o : lista) {
+			switch (o.getTipo()) {
+			case "D":
+				saldo += o.getValor();
+				break;
+			case "S":
+				saldo -= o.getValor();
+				break;
+			case "T":
+
+				if (o.getContaDestino().getId() == contaId) {
+
+					saldo -= o.getValor();
+				}
+				if (o.getContaOrigem().getId() == contaId) {
+					saldo += o.getValor();
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		return saldo;
 	}
 
 }

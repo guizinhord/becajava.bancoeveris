@@ -17,6 +17,7 @@ import br.app.BancoEveris.model.Conta;
 import br.app.BancoEveris.request.ContaReq;
 import br.app.BancoEveris.response.BaseRes;
 import br.app.BancoEveris.response.ContaListRes;
+import br.app.BancoEveris.response.ContaRes;
 import br.app.BancoEveris.service.ContaService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -36,6 +37,7 @@ public class ContaController extends BaseController {
 		}
 	}
 
+	//get por hash
 	@GetMapping(path = "/{id}")
 	public ResponseEntity obter(@PathVariable Long id) {
 		try {
@@ -73,6 +75,17 @@ public class ContaController extends BaseController {
 			BaseRes response = service.deletar(id);
 			return ResponseEntity.status(response.StatusCode).build();
 		} catch (Exception e) {
+			return ResponseEntity.status(errorBase.StatusCode).body(errorBase);
+		}
+	}
+	
+	@GetMapping(path = "/saldo/{hash}")
+	public ResponseEntity Saldo(@PathVariable String hash) {
+		try {
+			ContaRes response = service.Saldo(hash);
+			return ResponseEntity.status(response.StatusCode).body(response);
+		} catch (Exception e) {
+			
 			return ResponseEntity.status(errorBase.StatusCode).body(errorBase);
 		}
 	}
